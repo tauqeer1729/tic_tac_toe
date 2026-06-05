@@ -56,9 +56,12 @@ const GameController = (function (
     console.log(`${getActivePlayer().name}'s turn`);
   };
 
-  const CheckWin = (p) => {
+  const checkOver = (p) => {
     const winningPatterns = [7, 56, 73, 84, 146, 273, 292, 448];
-
+    const remainingPlaces = Gameboard.GetBoard()
+      .map((cell) => cell.getMark())
+      .filter((val) => val === 0);
+    console.log({ remainingPlaces });
     let posValue = 0;
     for (let i = 0; i < Gameboard.GetBoard().length; i++) {
       // console.log(Gameboard.GetBoard()[0].getMark());
@@ -72,8 +75,11 @@ const GameController = (function (
       Gameboard.printBoard();
 
       return `${p.name} wins`;
+    } else if (!remainingPlaces.length) {
+      isGameOver = true;
+      return `draw`;
     } else {
-      return `keep playing no win`;
+      return `keep playing no win/draw`;
     }
   };
 
@@ -87,14 +93,14 @@ const GameController = (function (
     );
     Gameboard.putMark(position, getActivePlayer());
     Gameboard.printBoard();
-    console.log(CheckWin(getActivePlayer()));
+    console.log(checkOver(getActivePlayer()));
     switchPlayerTurn();
   };
 
   return { playRound };
 })();
 
-const playerSeq = [2, 0, 4, 1, 6, 7];
+const playerSeq = [2, 0, 4, 1, 3, 6, 5, 7, 8];
 
 playerSeq.forEach((num) => {
   GameController.playRound(num);
